@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
+Built-By: tangjf
+Build-Jdk: 11.0.3
 Implementation-Title: web-center
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: tangjf
 Implementation-Vendor-Id: indi.monkey.web
-Build-Jdk: 1.8.0_211
-Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
- ot-starter-parent/web-pom/web-center
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/web-pom/web-center
 Created-By: Maven Integration for Eclipse
 
