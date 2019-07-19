@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @ConfigurationProperties("spring-boot.user.auto.enabled")
 @Slf4j
-@ComponentScan({"indi.monkey.web.user.controller","indi.monkey.web.user.config"})
-@EnableJpaRepositories(basePackages = "indi.monkey.web.user.dao")
+@ComponentScan({ "indi.monkey.web.user.controller", "indi.monkey.web.user.config" })
+@EnableJpaRepositories(basePackages = "indi.monkey.web.user.dao", entityManagerFactoryRef = "defaultEntityManagerFactory", transactionManagerRef = "defaultTransactionManager")
 public class UserAutoConfiguration {
 
 	@Value("${spring-boot.user.auto.enabled}")
@@ -38,7 +38,7 @@ public class UserAutoConfiguration {
 
 	@Autowired
 	Environment env;
-	
+
 	@Autowired(required = false)
 	@Qualifier("dataSource")
 	DataSource dataSource;
@@ -46,19 +46,16 @@ public class UserAutoConfiguration {
 	@Bean(name = "defaultDataSource")
 	@ConditionalOnMissingBean(DataSource.class)
 	public DataSource defaultDataSource() {
-		log.warn("can not find DataSource in spring context \t use default datasource configuration");
-		return DataSourceBuilder.create()
-				.driverClassName("com.mysql.cj.jdbc.Driver")
-				.username("root")
-				.password("root")
+		log.warn("can not find DataSource in spring context, \t using default datasource configuration");
+		return DataSourceBuilder.create().driverClassName("com.mysql.cj.jdbc.Driver").username("root").password("root")
 				.url("jdbc:mysql://192.168.2.69:3306/test?charset=utf8mb4&useSSL=false&serverTimezone=UTC").build();
 	}
 
-	@Bean(name = "entityManagerFactory")
+	@Bean(name = "defaultEntityManagerFactory")
 	@ConditionalOnMissingBean(EntityManagerFactory.class)
 	public LocalContainerEntityManagerFactoryBean defaultEntityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-		if(dataSource == null) {
+		if (dataSource == null) {
 			factory.setDataSource(defaultDataSource());
 		} else {
 			factory.setDataSource(dataSource);
@@ -68,24 +65,23 @@ public class UserAutoConfiguration {
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.hbm2ddl.auto", "create");
 		jpaProperties.put("hibernate.show-sql", "true");
-		jpaProperties.put("hibernate.dialect","org.hibernate.dialect.MySQL5InnoDBDialect");
+		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
 		factory.setJpaProperties(jpaProperties);
 		return factory;
 	}
 
-	@Bean(name = "transactionManager")
-	@ConditionalOnBean(name = "entityManagerFactory")
+	@Bean(name = "defaultTransactionManager")
+	@ConditionalOnBean(name = "defaultEntityManagerFactory")
 	@ConditionalOnMissingBean(PlatformTransactionManager.class)
 	public PlatformTransactionManager defaultTransactionManager() {
 		EntityManagerFactory factory = defaultEntityManagerFactory().getObject();
 		return new JpaTransactionManager(factory);
 	}
-	
-	
+
 	@Bean
 	@ConditionalOnMissingBean(UserService.class)
 	public UserService userService() {
-		if(String.valueOf(Boolean.TRUE).equalsIgnoreCase(userModuleEnabled)) {
+		if (String.valueOf(Boolean.TRUE).equalsIgnoreCase(userModuleEnabled)) {
 			UserServiceImpl userServiceImpl = new UserServiceImpl();
 			return userServiceImpl;
 		}

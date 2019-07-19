@@ -1,6 +1,7 @@
 package indi.monkey.web.user.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import indi.monkey.web.user.dao.UserRepository;
 import indi.monkey.web.user.entity.User;
@@ -19,7 +20,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(transactionManager = "defaultTransactionManager")
 	public boolean add(String userName, String password) throws Exception {
+		
 		try {
 			User u = new User();
 			u.setUserName(userName);
