@@ -7,6 +7,9 @@
 		<artifactId>web-pom</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+	<properties>
+		<monitor.rootPackage>indi/monkey/web/user</monitor.rootPackage>
+	</properties>
 	<artifactId>springboot-starter-web-user-login</artifactId>
 	<dependencies>
 		<dependency>
@@ -42,4 +45,23 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>interface</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>${monitor.rootPackage}/*Starter.class</exclude>
+								<exclude>/**/*.properties</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

@@ -30,7 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @ConfigurationProperties("spring-boot.user.auto.enabled")
 @Slf4j
 @ComponentScan({ "indi.monkey.web.user.controller", "indi.monkey.web.user.config" })
-@EnableJpaRepositories(basePackages = "indi.monkey.web.user.dao", entityManagerFactoryRef = "defaultEntityManagerFactory", transactionManagerRef = "defaultTransactionManager")
+@EnableJpaRepositories(basePackages = "${spring-boot.jpa.repository.packages}", 
+					   entityManagerFactoryRef = "${spring-boot.jpa.entityManagerFactoryRef}", 
+					   transactionManagerRef = "${spring-boot.jpa.transactionManagerRef}")
 public class UserAutoConfiguration {
 
 	@Value("${spring-boot.user.auto.enabled}")
@@ -47,11 +49,14 @@ public class UserAutoConfiguration {
 	@ConditionalOnMissingBean(DataSource.class)
 	public DataSource defaultDataSource() {
 		log.warn("can not find DataSource in spring context, \t using default datasource configuration");
-		return DataSourceBuilder.create().driverClassName("com.mysql.cj.jdbc.Driver").username("root").password("root")
+		return DataSourceBuilder.create().
+				driverClassName("com.mysql.cj.jdbc.Driver")
+				.username("root")
+				.password("root")
 				.url("jdbc:mysql://192.168.2.69:3306/test?charset=utf8mb4&useSSL=false&serverTimezone=UTC").build();
 	}
 
-	@Bean(name = "defaultEntityManagerFactory")
+	@Bean(name = "${spring-boot.jpa.entityManagerFactoryRef}")
 	@ConditionalOnMissingBean(EntityManagerFactory.class)
 	public LocalContainerEntityManagerFactoryBean defaultEntityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
@@ -70,8 +75,8 @@ public class UserAutoConfiguration {
 		return factory;
 	}
 
-	@Bean(name = "defaultTransactionManager")
-	@ConditionalOnBean(name = "defaultEntityManagerFactory")
+	@Bean(name = "${spring-boot.jpa.transactionManagerRef}")
+	@ConditionalOnBean(name = "${spring-boot.jpa.entityManagerFactoryRef}")
 	@ConditionalOnMissingBean(PlatformTransactionManager.class)
 	public PlatformTransactionManager defaultTransactionManager() {
 		EntityManagerFactory factory = defaultEntityManagerFactory().getObject();
