@@ -10,15 +10,15 @@
 #### 代码：
 	-- 1、自定义Configuration：  
 		1)注释：  
-		--@Configuration  // 标注是一个配置类  
-		--@ComponentScan  // 尽量标明需要依赖springIOC功能的packages，尽量细化，不宜太笼统  
-		--其他注解：  
-			@EnableJpaRepositories(basePackages={}) // 启动springJpa功能，扫描JpaRepository  
+		-- @Configuration  // 标注是一个配置类  
+		-- @ComponentScan  // 尽量标明需要依赖springIOC功能的packages，尽量细化，不宜太笼统  
+		-- 其他注解：  
+			 @EnableJpaRepositories(basePackages={}) // 启动springJpa功能，扫描JpaRepository  
 	
 		2)ConditionalOn*** :  
-		--@ConditionalOnBean  // 当有该类的bean就执行
-		--@ConditionalOnMissingBean  //当木有该类的bean就执行
-		
+		-- @ConditionalOnBean  // 当有该类的bean就执行
+		-- @ConditionalOnMissingBean  //当木有该类的bean就执行
+		-- ***
 	
 	-- 2、如何配置多个数据源：以及事务管理？
 		-- 以springboot JPA为例
