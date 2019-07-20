@@ -2,7 +2,6 @@
 
 ### springboot 自定义starter
 -- 自定义starter可以方便模块的管理、测试、以及松耦合
--- ![demo](https://github.com/F-Monkey/springboot)
 
 
 #### 规范：
