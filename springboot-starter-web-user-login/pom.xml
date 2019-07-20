@@ -9,6 +9,7 @@
 	</parent>
 	<properties>
 		<monitor.rootPackage>indi/monkey/web/user</monitor.rootPackage>
+		<build.resources.resource.directory>/src/main/resources</build.resources.resource.directory>
 	</properties>
 	<artifactId>springboot-starter-web-user-login</artifactId>
 	<dependencies>

@@ -17,7 +17,7 @@ public class CenterStarter {
 	
 	@PostConstruct
 	void init() {
-		System.out.println(dataSourceURL);
+		System.err.println(dataSourceURL);
 	}
 	
 	public static void main(String[] args) {

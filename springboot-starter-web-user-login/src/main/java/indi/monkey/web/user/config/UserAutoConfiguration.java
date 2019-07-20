@@ -2,6 +2,7 @@ package indi.monkey.web.user.config;
 
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConfigurationProperties("spring-boot.user.auto.enabled")
 @Slf4j
 @ComponentScan({ "indi.monkey.web.user.controller", "indi.monkey.web.user.config" })
-@EnableJpaRepositories(basePackages = "${spring-boot.jpa.repository.packages}", 
+@EnableJpaRepositories(basePackages = "indi.monkey.web.user.dao", 
 					   entityManagerFactoryRef = "${spring-boot.jpa.entityManagerFactoryRef}", 
 					   transactionManagerRef = "${spring-boot.jpa.transactionManagerRef}")
 public class UserAutoConfiguration {
@@ -44,6 +45,18 @@ public class UserAutoConfiguration {
 	@Autowired(required = false)
 	@Qualifier("dataSource")
 	DataSource dataSource;
+	
+	@Value("${spring-boot.jpa.entityManagerFactoryRef}")
+	String managerFactoryName;
+	@Value("${spring-boot.jpa.transactionManagerRef}")
+	String transactionManagerName;
+	
+	@PostConstruct
+	void init() {
+		System.err.println(managerFactoryName);
+		System.err.println(transactionManagerName);
+	}
+	
 
 	@Bean(name = "defaultDataSource")
 	@ConditionalOnMissingBean(DataSource.class)
@@ -56,7 +69,7 @@ public class UserAutoConfiguration {
 				.url("jdbc:mysql://192.168.2.69:3306/test?charset=utf8mb4&useSSL=false&serverTimezone=UTC").build();
 	}
 
-	@Bean(name = "${spring-boot.jpa.entityManagerFactoryRef}")
+	@Bean(name = "defaultEntityManagerFactory")
 	@ConditionalOnMissingBean(EntityManagerFactory.class)
 	public LocalContainerEntityManagerFactoryBean defaultEntityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
@@ -75,8 +88,8 @@ public class UserAutoConfiguration {
 		return factory;
 	}
 
-	@Bean(name = "${spring-boot.jpa.transactionManagerRef}")
-	@ConditionalOnBean(name = "${spring-boot.jpa.entityManagerFactoryRef}")
+	@Bean(name = "defaultTransactionManager")
+	@ConditionalOnBean(name = "defaultEntityManagerFactory")
 	@ConditionalOnMissingBean(PlatformTransactionManager.class)
 	public PlatformTransactionManager defaultTransactionManager() {
 		EntityManagerFactory factory = defaultEntityManagerFactory().getObject();
