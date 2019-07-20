@@ -56,4 +56,6 @@
 				}
 			}
 		***
-		
+	
+	-- 3、如何引入自定义starter。
+		详见：springboot\web-center\src\main\resources\META-INF\spring.factories
